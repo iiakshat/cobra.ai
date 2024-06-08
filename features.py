@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import asyncio
 from io import BytesIO
 import streamlit as st
 from PIL import Image
@@ -16,14 +17,21 @@ including handwritten notes, diagrams, or other content. You will be asked quest
 that these images contain, and you have to answer those questions by considering the context of all provided images.
 """
 
-def get_response(images, query, prompt=context_prompt):
-    responses = []
-    for image in images:
-        response = model.generate_content([prompt, image, query])
-        responses.append(response.text)
-        
+async def generate_response(prompt, image, query):
+    response = model.generate_content([prompt, image, query])
+    return response.text
+
+async def get_response_async(images, query, prompt=context_prompt):
+    tasks = [generate_response(prompt, image, query) for image in images]
+    responses = await asyncio.gather(*tasks)
     return responses
 
+def get_response(images, query, prompt=context_prompt):
+    try:
+        return asyncio.run(get_response_async(images, query, prompt))
+    except Exception as e:
+        print(f"Error during async processing: {e}.")
+    
 def details(uploaded_files):
     image_parts = []
     for uploaded_file in uploaded_files:
@@ -65,7 +73,10 @@ def display(files):
                 image = Image.open(uploaded_file)
                 images.append(image)
 
+    max_images_per_row = 3
     if images:
-        cols = st.columns(len(images))
-        for col, image in zip(cols, images):
-            col.image(image, caption="Uploaded Image", width=250)
+        for i in range(0, len(images), max_images_per_row):
+            row_images = images[i:i + max_images_per_row]
+            cols = st.columns(len(row_images))
+            for col, image in zip(cols, row_images):
+                col.image(image, caption="Uploaded Image", width=230)
