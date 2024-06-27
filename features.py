@@ -39,7 +39,10 @@ def details(uploaded_files):
             if uploaded_file.type == "application/pdf":
 
                 pdf_bytes = uploaded_file.read()
-                images = convert_from_bytes(pdf_bytes)
+                try:
+                    images = convert_from_bytes(pdf_bytes)
+                except:
+                    return -1
 
                 print(len(images))
                 for image in images:
