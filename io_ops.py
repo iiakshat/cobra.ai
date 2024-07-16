@@ -15,7 +15,7 @@ def read_from_file(file_path):
     qa_pairs = [(q.strip(), a.strip()) for q, a in qa_pairs]
     return qa_pairs
 
-# Function to write questions and answers to a pdf file
+
 class PDF(FPDF):
 
     title = "Cobra.ai"
