@@ -30,7 +30,8 @@ def get_response(images, query, prompt=context_prompt):
     try:
         return asyncio.run(get_response_async(images, query, prompt))
     except Exception as e:
-        print(f"Error during async processing: {e}.")
+        st.error(f"Error during async processing: {e}.")
+        return []
     
 def details(uploaded_files):
     image_parts = []
@@ -39,17 +40,12 @@ def details(uploaded_files):
             if uploaded_file.type == "application/pdf":
 
                 pdf_bytes = uploaded_file.read()
-                try:
-                    images = convert_from_bytes(pdf_bytes)
-                except:
-                    return -1
+                images = convert_from_bytes(pdf_bytes)
 
-                print(len(images))
                 for image in images:
                     img_bytes = BytesIO()
                     image.save(img_bytes, format='PNG')
 
-                    print("Images saved")
                     image_parts.append({
                         "mime_type": "image/png",
                         "data": img_bytes.getvalue()
@@ -63,18 +59,24 @@ def details(uploaded_files):
 
     return image_parts
 
-def display(files):
+def display(files, imquery=False):
     images = []
     if files:
         for uploaded_file in files:
+            try:
+                if uploaded_file.type == "application/pdf":
+                    pdf_images = convert_from_bytes(uploaded_file.read())
+                    if imquery:
+                        pdf_images = Image.open(uploaded_file)
+                            
+                    images.extend(pdf_images)
 
-            if uploaded_file.type == "application/pdf":
-                pdf_images = convert_from_bytes(uploaded_file.read())
-                images.extend(pdf_images)
+                else:
+                    image = Image.open(uploaded_file)
+                    images.append(image)
 
-            else:
-                image = Image.open(uploaded_file)
-                images.append(image)
+            except:
+                st.error("Cannot Show Preview")
 
     max_images_per_row = 3
     if images:
