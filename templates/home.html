@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+    <link rel="stylesheet" href="../static/css/home.css">
+    <script src="../static/scripts/home.js"></script>
+
+</head>
+<body>
+    <div class="header">
+        <div class="logo">LOGO</div>
+        <div class="social-icons">
+        </div>
+    </div>
+    <div class="container">
+        <div class="slider" id="slider">
+            <div class="slider-header">
+                <span>Slider</span>
+                <button onclick="toggleSlider()">Minimise</button>
+            </div>
+            <div class="slider-content">
+            </div>
+        </div>
+        <div class="main-content">
+            <h1>Title Here</h1>
+            <p>Hiii, {{ name }}</p>
+            <div class="file-upload">
+                <input type="file" id="file-input" accept=".pdf, image/*" />
+                <label for="file-input">Drop PDF/Images</label>
+            </div>
+            <div class="controls">
+                <label class="switch">
+                    <input type="checkbox" id="preview-images">
+                    <span class="slider round"></span>
+                    Preview Images
+                </label>
+                <label class="switch">
+                    <input type="checkbox" id="image-only">
+                    <span class="slider round"></span>
+                    My question is only related to images
+                </label>
+            </div>
+            <input type="text" id="question-input" placeholder="Enter Question">
+            <button onclick="sendQuestion()">Send</button>
+            <div class="answer">
+                <p>Answer...</p>
+            </div>
+        </div>
+        <div class="messenger" id="messenger">
+            <div class="messenger-header">
+                <span>Messages</span>
+                <button onclick="toggleMessenger()">Minimise</button>
+            </div>
+            <div class="messenger-content">
+                <div class="message-input">
+                    <input type="text" id="message-input" placeholder="Enter message">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
