@@ -6,14 +6,14 @@
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <script src="{{ url_for('static', filename='login.js') }}"></script>
-    <link rel="stylesheet" href="../static/css/login.css">
-    <script src="../static/scripts/login.js"></script>
+    <!-- <link rel="stylesheet" href="../static/css/login.css">
+    <script src="../static/scripts/login.js"></script> -->
 
 </head>
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form action="{{ url_for('login') }}" method="post">
+        <form action="{{ url_for('home') }}" method="post">
             <div class="input-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" class="input-box" required>
@@ -21,7 +21,7 @@
 
             <div class="input-group">
                 <label for="api-key">Gemini API Key</label>
-                <input type="text" id="api-key" name="api_key" class="input-box" required>
+                <input type="text" id="api-key" name="api_key" class="input-box">
             </div>
 
             <div class="button-group">
