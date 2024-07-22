@@ -157,10 +157,8 @@ input:checked + .slider:before {
     background: #434190;
 }
 
-.minimized {
+/* Minimized state */
+.minimized .slider-content,
+.minimized .messenger-content {
     display: none;
-}
-
-.minimize-button {
-    display: block;
 }
