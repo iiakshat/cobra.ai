@@ -14,19 +14,21 @@
     <div class="header">
         <div class="logo">LOGO</div>
         <div class="social-icons">
+            <!-- Add your social icons here -->
         </div>
     </div>
     <div class="container">
         <div class="slider" id="slider">
             <div class="slider-header">
                 <span>Slider</span>
-                <button onclick="toggleSlider()">Minimise</button>
+                <button onclick="toggleSlider()" id="slider-toggle-btn">Minimise</button>
             </div>
             <div class="slider-content">
+                <!-- Slider content goes here -->
             </div>
         </div>
         <div class="main-content">
-            <h1>Title Here</h1>
+            <h1>Cobra.AI</h1>
             <p>Hiii, {{ name }}</p>
             <div class="file-upload">
                 <input type="file" id="file-input" accept=".pdf, image/*" />
@@ -53,12 +55,16 @@
         <div class="messenger" id="messenger">
             <div class="messenger-header">
                 <span>Messages</span>
-                <button onclick="toggleMessenger()">Minimise</button>
+                <button onclick="toggleMessenger()" id="messenger-toggle-btn">Minimise</button>
             </div>
             <div class="messenger-content">
+                <!-- Messenger content goes here -->
                 <div class="message-input">
                     <input type="text" id="message-input" placeholder="Enter message">
                     <button onclick="sendMessage()">Send</button>
+                </div>
+                <div class="message-display" id="message-display">
+                    <!-- Messages will be displayed here -->
                 </div>
             </div>
         </div>
