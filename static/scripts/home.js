@@ -1,56 +1,49 @@
-function toggleSlider() {
-    var slider = document.getElementById('slider');
-    var sliderToggleBtn = document.getElementById('slider-toggle-btn');
-    if (slider.classList.contains('minimized')) {
-        slider.classList.remove('minimized');
-        sliderToggleBtn.textContent = 'Minimise';
+document.getElementById('minimize-sidebar').addEventListener('click', function() {
+    var sidebar = document.getElementById('sidebar');
+    var content = document.getElementById('sidebar-content');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        this.textContent = 'Minimize';
     } else {
-        slider.classList.add('minimized');
-        sliderToggleBtn.textContent = 'Maximise';
+        content.style.display = 'none';
+        this.textContent = 'Maximize';
     }
-}
+});
 
-function toggleMessenger() {
+document.getElementById('minimize-messenger').addEventListener('click', function() {
     var messenger = document.getElementById('messenger');
-    var messengerToggleBtn = document.getElementById('messenger-toggle-btn');
-    if (messenger.classList.contains('minimized')) {
-        messenger.classList.remove('minimized');
-        messengerToggleBtn.textContent = 'Minimise';
+    var content = document.getElementById('messenger-content');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        this.textContent = 'Minimize';
     } else {
-        messenger.classList.add('minimized');
-        messengerToggleBtn.textContent = 'Maximise';
+        content.style.display = 'none';
+        this.textContent = 'Maximize';
     }
-}
+});
 
 function sendQuestion() {
-    var question = $('#question-input').val();
-    var previewImages = $('#preview-images').is(':checked');
-    var imageOnly = $('#image-only').is(':checked');
-    
-    $.ajax({
-        type: 'POST',
-        url: '/send_question',
-        data: JSON.stringify({
-            'question': question,
-            'preview_images': previewImages,
-            'image_only': imageOnly
-        }),
-        contentType: 'application/json',
-        success: function(response) {
-            $('#answer-text').text(response.answer);
+    var question = document.getElementById('question').value;
+    fetch('/send_question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
         },
-        error: function() {
-            $('#answer-text').text('An error occurred while processing your question.');
-        }
-    });
+        body: JSON.stringify({ 
+            question: question,
+            preview_images: false,
+            image_only: false 
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        var answerSection = document.getElementById('answer-section');
+        answerSection.innerHTML = `<p>${data.answer}</p>`;
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 function sendMessage() {
-    var message = $('#message-input').val();
-    
-    // Add the message to the display
-    $('#message-display').append('<div>' + message + '</div>');
-    
-    // Clear the input
-    $('#message-input').val('');
+    var message = document.getElementById('message').value;
+    // Handle sending the message to the chat
 }

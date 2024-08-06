@@ -6,68 +6,43 @@
     <title>Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
     <script src="{{ url_for('static', filename='home.js') }}"></script>
-    <link rel="stylesheet" href="../static/css/home.css">
-    <script src="../static/scripts/home.js"></script>
-
 </head>
 <body>
-    <div class="header">
+    <header>
         <div class="logo">LOGO</div>
-        <div class="social-icons">
-            <!-- Add your social icons here -->
-        </div>
-    </div>
-    <div class="container">
-        <div class="slider" id="slider">
-            <div class="slider-header">
-                <span>Slider</span>
-                <button onclick="toggleSlider()" id="slider-toggle-btn">Minimise</button>
+        <div class="social-icons">Social Icons</div>
+    </header>
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <button id="minimize-sidebar">Minimize</button>
+            <div id="sidebar-content">
+                <h2>New Chat</h2>
+                <!-- Chat history goes here -->
             </div>
-            <div class="slider-content">
-                <!-- Slider content goes here -->
+        </aside>
+        <div class="content">
+            <div class="welcome-message">
+                <h2>Hiii, {{ name }}.</h2>
             </div>
-        </div>
-        <div class="main-content">
-            <h1>Cobra.AI</h1>
-            <p>Hiii, {{ name }}</p>
-            <div class="file-upload">
-                <input type="file" id="file-input" accept=".pdf, image/*" />
-                <label for="file-input">Drop PDF/Images</label>
+            <div class="upload-section">
+                <p>Drop PDF/Images</p>
             </div>
-            <div class="controls">
-                <label class="switch">
-                    <input type="checkbox" id="preview-images">
-                    <span class="slider round"></span>
-                    Preview Images
-                </label>
-                <label class="switch">
-                    <input type="checkbox" id="image-only">
-                    <span class="slider round"></span>
-                    My question is only related to images
-                </label>
+            <div class="question-section">
+                <input type="text" id="question" placeholder="Enter Question">
+                <button onclick="sendQuestion()">Send</button>
             </div>
-            <input type="text" id="question-input" placeholder="Enter Question">
-            <button onclick="sendQuestion()">Send</button>
-            <div class="answer">
-                <p>Answer...</p>
+            <div class="answer-section" id="answer-section">
+                <!-- Answer will be displayed here -->
             </div>
         </div>
-        <div class="messenger" id="messenger">
-            <div class="messenger-header">
-                <span>Messages</span>
-                <button onclick="toggleMessenger()" id="messenger-toggle-btn">Minimise</button>
-            </div>
-            <div class="messenger-content">
+        <aside class="messenger" id="messenger">
+            <button id="minimize-messenger">Minimize</button>
+            <div id="messenger-content">
                 <!-- Messenger content goes here -->
-                <div class="message-input">
-                    <input type="text" id="message-input" placeholder="Enter message">
-                    <button onclick="sendMessage()">Send</button>
-                </div>
-                <div class="message-display" id="message-display">
-                    <!-- Messages will be displayed here -->
-                </div>
+                <input type="text" id="message" placeholder="Enter Message">
+                <button onclick="sendMessage()">Send</button>
             </div>
-        </div>
+        </aside>
     </div>
 </body>
 </html>
