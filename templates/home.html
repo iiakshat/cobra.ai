@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="../static/css/home.css">
+    <script type="text/javascript" src="../static/scripts/home.js"></script>
+    <script src="{{ url_for('static', filename='home.css') }}"></script>
     <script src="{{ url_for('static', filename='home.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 </head>
 <body>
+
     <header>
         <div class="logo">LOGO</div>
         <div class="social-icons">Social Icons</div>
     </header>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            var socket = io.connect("http://localhost:5000")
+            socket.on('connect', function() {
+                socket.send('{{ name }} joined the chat')
+            }); 
+
+            socket.on('message', function(msg) {
+                $('#message-section').prepend($('<p>').text(msg));
+            });
+
+            $('#sendMsg').on('click', function() {
+                socket.send('{{ name }}' + ': ' + $('#message').val());
+                $('#message').val('');
+            });
+        });
+    </script>
+
+
     <div class="main-container">
         <aside class="sidebar" id="sidebar">
             <button id="minimize-sidebar">Minimize</button>
@@ -25,11 +51,11 @@
                 <h2>Hiii, {{ name }}.</h2>
             </div>
             <div class="upload-section">
-                <p>Drop PDF/Images</p>
+                <input type="file" id="upload" multiple>
             </div>
             <div class="question-section">
                 <input type="text" id="question" placeholder="Enter Question">
-                <button onclick="sendQuestion()">Send</button>
+                <button id="ask" onclick="sendQuestion()">Ask</button>
             </div>
             <div class="answer-section" id="answer-section">
                 <!-- Answer will be displayed here -->
@@ -37,10 +63,11 @@
         </div>
         <aside class="messenger" id="messenger">
             <button id="minimize-messenger">Minimize</button>
-            <div id="messenger-content">
-                <!-- Messenger content goes here -->
+            <div id="message-section">   
+            </div>
+            <div id="input-section">
                 <input type="text" id="message" placeholder="Enter Message">
-                <button onclick="sendMessage()">Send</button>
+                <button id="sendMsg">Send</button>
             </div>
         </aside>
     </div>
