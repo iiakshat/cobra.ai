@@ -44,6 +44,21 @@ function sendQuestion() {
 }
 
 function sendMessage() {
-    var message = document.getElementById('message').value;
-    // Handle sending the message to the chat
+    var question = document.getElementById('message').value;
+    fetch('/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            message: message,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        var messageSection = document.getElementById('message-section');
+        messageSection.innerHTML = `<p>${data.message}</p>`;
+    })
+    .catch(error => console.error('Error:', error));
 }
+
