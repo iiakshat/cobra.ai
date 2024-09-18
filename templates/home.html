@@ -50,13 +50,17 @@
             <div class="welcome-message">
                 <h2>Hiii, {{ name }}.</h2>
             </div>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
             <div class="upload-section">
-                <input type="file" id="upload" multiple>
+                <input type="file" id="file" name="file" accept=".pdf, .docx, .jpg, .jpeg, .png" required multiple>
             </div>
             <div class="question-section">
                 <input type="text" id="question" placeholder="Enter Question">
                 <button id="ask" onclick="sendQuestion()">Ask</button>
             </div>
+        </form>
+
             <div class="answer-section" id="answer-section">
                 <!-- Answer will be displayed here -->
             </div>
