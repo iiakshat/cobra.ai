@@ -1,5 +1,5 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Josefin Sans" ,'Arial', sans-serif;
     background: linear-gradient(135deg, #2b2e4a, #4c4c6d);
     color: white;
     display: flex;
@@ -13,9 +13,17 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+    color: #000;
     background: rgba(0, 0, 0, 0.7);
 }
 
+h1 {
+    margin: 0;
+}
+
+p {
+    font-family: "ubuntu";
+}
 .main-container {
     display: flex;
     flex: 1;
@@ -25,6 +33,26 @@ header {
     width: 200px;
     background: rgba(0, 0, 0, 0.7);
     padding: 1rem;
+    display: block;
+}
+
+#newchat {
+    margin-left: 10%;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 6px 30px 6px 30px;
+    background-color: rgba(255, 255, 255, 0.673);
+    transition: all 0.3s ease-in-out;
+}
+
+#newchat:hover {
+    background-color: white;
+}
+
+#chatlabel {
+    color: rgb(33, 33, 33);
+    text-decoration: none;
 }
 
 .content {
@@ -41,11 +69,59 @@ header {
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 5px;
+    color: #000;
 }
 
 #upload {
     color: black;
 }
+
+.checkbox-wrapper-49 input[type="checkbox"] {
+    visibility: hidden;
+  }
+
+  .checkbox-wrapper-49 {
+    --size: 40px;
+  }
+
+  .checkbox-wrapper-49 .block {
+    position: relative;
+    clear: both;
+    float: left;
+  }
+
+  .checkbox-wrapper-49 label {
+    width: var(--size);
+    height: calc(var(--size) / 2);
+    box-sizing: border-box;
+    border: 2px solid;
+    float: left;
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: .3s ease;
+    color: rgb(255, 255, 255);
+  }
+  .checkbox-wrapper-49 input[type=checkbox]:checked + label {
+    background: #5a67d8;;
+  }
+  .checkbox-wrapper-49 input[type=checkbox]:checked + label:before {
+    left: calc(var(--size) / 2);
+  }
+  .checkbox-wrapper-49 label:before {
+    transition: .3s ease;
+    content: '';
+    width: calc((var(--size) / 2) - 10px);
+    height: calc((var(--size) / 2) - 10px);
+    position: absolute;
+    background: white;
+    left: 2px;
+    top: 2px;
+    box-sizing: border-box;
+    border: 3px solid;
+    color: #969696;;
+    border-radius: 100px;
+  }
 
 .question-section {
     margin-bottom: 1rem;
@@ -114,12 +190,14 @@ button:hover {
 
 #progress-section {
     position: relative;
+    text-align: center;
+    justify-content: center;
 }
 .loading {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0, 0, 0, 0.3);
+    width: 30px;
+    height: 30px;
+    border: 3px dashed rgb(255, 255, 255);
     border-radius: 50%;
     border-top-color: #000;
     animation: spin 1s linear infinite;
