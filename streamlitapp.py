@@ -1,6 +1,6 @@
 import os
 import time
-import io_ops as io
+import io_ops
 import streamlit as st
 import features as ft
 from langchain_groq import ChatGroq
@@ -69,7 +69,7 @@ def clndir(d = './files/'):
 
 def download_file(query, file_path="output.txt"):
     
-    io.main()
+    io_ops.main()
     with open("output.pdf", "rb") as f:
         data = f.read()
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
                     if query:
                         res = dict(response)["content"]
                         st.write(res)
-                        io.write_to_file(query, res)
+                        io_ops.write_to_file(query, res)
                         f = time.perf_counter()
                         st.divider()
                         st.caption(f"Time taken : {round(f-s,2)} seconds")
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                     f = time.perf_counter()
                     st.divider()
                     st.caption(f"Time taken : {round(f-s,2)} seconds")
-                    io.write_to_file(query, res)
+                    io_ops.write_to_file(query, res)
                     download_file(query)
 
         else:
@@ -190,7 +190,7 @@ if __name__ == "__main__":
                     f = time.perf_counter()
                     st.divider()
                     st.caption(f"Time taken : {round(f-s,2)} seconds")
-                    io.write_to_file(query, res)
+                    io_ops.write_to_file(query, res)
                     download_file(query)
 
             except Exception as e:
