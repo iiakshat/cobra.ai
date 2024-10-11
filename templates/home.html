@@ -10,65 +10,77 @@
     <script src="{{ url_for('static', filename='home.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-    <header>
-        <div class="logo">LOGO</div>
+    <!-- Header -->
+    <header style="background-color: rgb(248, 248, 248);">
+        <div class="logo"><img src="../static/logo.png" width="40px" height="30px"></div>
+        <h1> Cobra.AI </h1>
         <div class="social-icons">Social Icons</div>
     </header>
 
-    <script type="text/javascript">
-
-        $(document).ready(function() {
-            var socket = io.connect("http://localhost:5000")
-            socket.on('connect', function() {
-                socket.send('{{ name }} joined the chat')
-            }); 
-
-            socket.on('message', function(msg) {
-                $('#message-section').prepend($('<p>').text(msg));
-            });
-
-            $('#sendMsg').on('click', function() {
-                socket.send('{{ name }}' + ': ' + $('#message').val());
-                $('#message').val('');
-            });
-        });
-    </script>
-
-
     <div class="main-container">
+
+        <!-- Chat Section -->
         <aside class="sidebar" id="sidebar">
             <button id="minimize-sidebar">Minimize</button>
             <div id="sidebar-content">
-                <h2>New Chat</h2>
-                <!-- Chat history goes here -->
+                <button id="newchat"><a id="chatlabel" href='http://localhost:5000'>New Chat</a></button>
+                <div id="preview-images-container"></div>
             </div>
         </aside>
+
+        <!-- Center Division -->
         <div class="content">
             <div class="welcome-message">
                 <h2>Hiii, {{ name }}.</h2>
             </div>
 
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <div class="upload-section">
-                <input type="file" id="file" name="file" accept=".pdf, .docx, .jpg, .jpeg, .png" required multiple>
-            </div>
-            <div class="question-section">
-                <input type="text" id="question" placeholder="Enter Question">
-                <button id="ask" onclick="sendQuestion()">Ask</button>
-            </div>
-        </form>
+            <form id="uploadForm" action="/query" method="post" enctype="multipart/form-data">
 
-            <div class="answer-section" id="answer-section">
-                <!-- Answer will be displayed here -->
-            </div>
+                <!-- Upload section -->
+                <div class="upload-section">
+                    <input type="file" id="file" name="file" accept=".pdf, .docx, .jpg, .jpeg, .png" required multiple>
+                </div>
+
+                <!-- Checkboxes -->
+                <div class="checkbox-wrapper-49">
+                    <div class="block">
+                      <input data-index="0" id="previewimage" type="checkbox" />
+                      <label for="previewimage"></label>
+                    </div>
+                  </div>
+                  <p id="preimg">Preview Images</p>
+                <div class="checkbox-wrapper-49">
+                    <div class="block">
+                      <input data-index="0" id="imagequery" type="checkbox" />
+                      <label for="imagequery"></label>
+                    </div>
+                  </div>
+                  <p id="imgquery">My Question is related to images in the file.</p>
+                
+                <!-- Question section -->
+                <div class="question-section">
+                    <input type="text" id="question" name="question" placeholder="Enter Question" required>
+                    <button type="submit" id="ask">Ask</button>
+                </div>
+            </form>
+
+            <!-- Progress and answer sections -->
+            <div id="progress-section"></div>
+            <div id="answer-section"></div>
         </div>
+
+        <!-- Messenger -->
         <aside class="messenger" id="messenger">
             <button id="minimize-messenger">Minimize</button>
-            <div id="message-section">   
-            </div>
+            <div id="message-section"></div>
             <div id="input-section">
                 <input type="text" id="message" placeholder="Enter Message">
                 <button id="sendMsg">Send</button>
