@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import asyncio
+import base64
 from io import BytesIO
 import streamlit as st
 from PIL import Image
@@ -59,29 +60,55 @@ def details(uploaded_files):
 
     return image_parts
 
-def display(files, imquery=False):
+def display(files, imquery=False, streamlit=True):
+    
     images = []
-    if files:
+    if streamlit:
+        if files:
+            for uploaded_file in files:
+                try:
+                    if uploaded_file.type == "application/pdf":
+                        pdf_images = convert_from_bytes(uploaded_file.read())
+                        if imquery:
+                            pdf_images = Image.open(uploaded_file)
+                                
+                        images.extend(pdf_images)
+
+                    else:
+                        image = Image.open(uploaded_file)
+                        images.append(image)
+
+                except:
+                    st.error("Cannot Show Preview")
+
+        max_images_per_row = 3
+        if images:
+            for i in range(0, len(images), max_images_per_row):
+                row_images = images[i:i + max_images_per_row]
+                cols = st.columns(len(row_images))
+                for col, image in zip(cols, row_images):
+                    col.image(image, caption="Uploaded Image", width=230)
+
+    else:   
         for uploaded_file in files:
             try:
-                if uploaded_file.type == "application/pdf":
+                if uploaded_file.mimetype == "application/pdf":
                     pdf_images = convert_from_bytes(uploaded_file.read())
                     if imquery:
-                        pdf_images = Image.open(uploaded_file)
-                            
+                        pdf_images = [Image.open(uploaded_file)]
                     images.extend(pdf_images)
-
                 else:
                     image = Image.open(uploaded_file)
                     images.append(image)
+            except Exception as e:
+                print(f"Error processing file: {e}")
 
-            except:
-                st.error("Cannot Show Preview")
+        image_data = []
+        for image in images:
+            img_io = BytesIO()
+            image.save(img_io, 'JPEG', quality=70)
+            img_io.seek(0)
+            img_base64 = base64.b64encode(img_io.getvalue()).decode('ascii')
+            image_data.append(f"data:image/jpeg;base64,{img_base64}")
 
-    max_images_per_row = 3
-    if images:
-        for i in range(0, len(images), max_images_per_row):
-            row_images = images[i:i + max_images_per_row]
-            cols = st.columns(len(row_images))
-            for col, image in zip(cols, row_images):
-                col.image(image, caption="Uploaded Image", width=230)
+        return image_data
