@@ -79,12 +79,12 @@ def upload_files():
 
         vectors_ = vector_embedding(flask=True)
 
-    i=0
+    file_cnt = 0
     while not vectors_:
         socketio.emit('progress', {'message': "Waiting for files..."})
         time.sleep(0.5)
-        i+=1
-        if i>100:
+        file_cnt+=1
+        if file_cnt>100:
             return "Either None Or Too Many Files Have Been Uploaded."
 
     answer, restime = process_question(question, image_only)
