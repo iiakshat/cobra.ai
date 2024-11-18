@@ -90,25 +90,26 @@ def display(files, imquery=False, streamlit=True):
                     col.image(image, caption="Uploaded Image", width=230)
 
     else:   
-        for uploaded_file in files:
-            try:
-                if uploaded_file.mimetype == "application/pdf":
-                    pdf_images = convert_from_bytes(uploaded_file.read())
-                    if imquery:
-                        pdf_images = [Image.open(uploaded_file)]
-                    images.extend(pdf_images)
-                else:
-                    image = Image.open(uploaded_file)
-                    images.append(image)
-            except Exception as e:
-                print(f"Error processing file: {e}")
+        if files:
+            for uploaded_file in files:
+                try:
+                    if uploaded_file.mimetype == "application/pdf":
+                        pdf_images = convert_from_bytes(uploaded_file.read())
+                        if imquery:
+                            pdf_images = [Image.open(uploaded_file)]
+                        images.extend(pdf_images)
+                    else:
+                        image = Image.open(uploaded_file)
+                        images.append(image)
+                except Exception as e:
+                    print(f"Error processing file: {e}")
 
-        image_data = []
-        for image in images:
-            img_io = BytesIO()
-            image.save(img_io, 'JPEG', quality=70)
-            img_io.seek(0)
-            img_base64 = base64.b64encode(img_io.getvalue()).decode('ascii')
-            image_data.append(f"data:image/jpeg;base64,{img_base64}")
+            image_data = []
+            for image in images:
+                img_io = BytesIO()
+                image.save(img_io, 'JPEG', quality=70)
+                img_io.seek(0)
+                img_base64 = base64.b64encode(img_io.getvalue()).decode('ascii')
+                image_data.append(f"data:image/jpeg;base64,{img_base64}")
 
-        return image_data
+            return image_data
