@@ -27,16 +27,8 @@ def home():
     name = request.form['name']
     return render_template('home.html', name=name, api_key=api_key)
 
-@socketio.on('upload_files')
-def handle_file_upload():
-    files = request.files.getlist('file')
-    imquery = request.form.get('previewimage', 'false').lower() == 'true'
-    image_data = ft.display(files, imquery)
-    
-    socketio.emit('display_images', {'images': image_data})
 
-
-def process_question(question, image_only):
+def process_question(question, image_only, llm, prompt):
     
     # if question and not image_only:
 
@@ -56,26 +48,36 @@ def process_question(question, image_only):
 
 @app.route('/query', methods=['POST'])
 def upload_files():
-
     global files, vectors_
+    fmt = ""
     question = request.form.get("question")
-    preview_images = request.form.get("previewimage")
-    image_only = request.form.get("imagequery")
-
-
+    preview_images = request.form.get('previewimage', 'false').lower() == 'true'
+    image_only = request.form.get("imagequery", 'false').lower() == 'true'
+    
+    image_data = ft.display(files, preview_images, streamlit=False)  
+    socketio.emit('display_images', {'images': image_data})
+    
     if not files:
         files = request.files.getlist('file')
-
         if not files or not question:
             return jsonify({'error': 'Both files and question are required.'}), 400
 
         nfiles = len(files)
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
         for i, file in enumerate(files):
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp-{i+1}.pdf")
-            file.save(file_path)
-            socketio.emit('progress', {'message': f"File {i+1} of {nfiles} saved."})
-            print(f"File {i+1} of {nfiles} saved.")
+            fmt = file.filename.split('.')[-1]
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file.filename}")
+            
+            if file:
+                print(f"Saving file {file.filename} to {file_path}")
+                file.save(file_path)
+                saved_size = os.path.getsize(file_path)
+                print(f"File {file.filename} saved with size {saved_size} bytes.")
+                if saved_size == 0:
+                    print(f"Warning: File {file.filename} is empty after saving.")
+                socketio.emit('progress', {'message': f"File {i+1} of {nfiles} saved."})
+            else:
+                print(f"Warning: File object {file.filename} is empty.")
 
         vectors_ = vector_embedding(flask=True)
 
@@ -83,15 +85,20 @@ def upload_files():
     while not vectors_:
         socketio.emit('progress', {'message': "Waiting for files..."})
         time.sleep(0.5)
-        file_cnt+=1
-        if file_cnt>100:
+        file_cnt += 1
+        if file_cnt > 20:
             return "Either None Or Too Many Files Have Been Uploaded."
 
-    answer, restime = process_question(question, image_only)
+    if fmt in ["mp3", "mp4", "wav"]:
+        pass
+    
+    answer, restime = process_question(question, image_only, llm, prompt)
     for f in os.listdir(app.config['UPLOAD_FOLDER']):
         os.remove(os.path.join(app.config['UPLOAD_FOLDER'], f))
 
-    return jsonify({'answer': answer, "response_time": round(restime,2)})
+    socketio.emit('answer_response', {'answer': answer, 'response_time': round(restime, 2)})
+    return '', 204  # No content response to avoid re-rendering
+
 
 @socketio.on('message')
 def handle_message(message):
