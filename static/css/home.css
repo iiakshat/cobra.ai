@@ -36,6 +36,19 @@ p {
     display: block;
 }
 
+#preview-images-container {
+    border-radius: 18px;
+    margin-top: 20px;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+#preview-images-container img {
+    width: 180px;
+    margin-bottom: 20px;
+}
+
+
 #newchat {
     margin-left: 10%;
     margin-top: 30px;

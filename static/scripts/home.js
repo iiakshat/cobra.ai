@@ -16,7 +16,19 @@ $(document).ready(function() {
     socket.on('message', function(msg) {
         $('#message-section').prepend($('<p>').text(msg));
     });
-    
+
+    // Display progress messages
+    socket.on('progress', function(data) {
+        const progressMessage = $('<p></p>').text(data.message);
+        $('#progress-section').append(progressMessage);
+    });
+
+    // Display the answer response
+    socket.on('answer_response', function(data) {
+        $('progress-section').html("");
+        $('#answer-section').html(`<p>${data.answer}</p><p>Response Time: ${data.response_time} seconds</p>`);
+    });
+
     // Event listener for file and question input to toggle ask button
     $('#file, #question').on('input', function() {
         if ($('#file').val() && $('#question').val()) {
@@ -35,19 +47,13 @@ $(document).ready(function() {
         const loading = $('<div class="loading"></div>');
         $('#progress-section').append(loading);
 
-        socket.on('progress', function(data) {
-            const progressMessage = $('<p></p>').text(data.message);
-            $('#progress-section').append(progressMessage);
-        });
-        
         $.ajax({
             url: '/query',
             type: 'POST',
             data: formData,
             contentType: false,
             processData: false,
-            success: function(data) {
-                $('#answer-section').html(`<p>${data.answer}</p><p>Response Time: ${data.response_time} seconds</p>`);
+            success: function() {
                 loading.remove(); // Remove loading indicator
             },
             error: function(xhr, status, error) {
@@ -65,61 +71,22 @@ $(document).ready(function() {
                         formData.append('file', files[i]);
                     }
                     formData.append('imquery', $('#imagequery').is(':checked'));
-    
+
                     socket.emit('upload_files', formData);
                 }
             } else {
                 $('#preview-images-container').empty();
             }
         });
-    
+
         socket.on('display_images', function(data) {
             $('#preview-images-container').empty();
             data.images.forEach(function(image) {
-                var imgElement = $('<img>').attr('src', image).attr('alt', 'Uploaded Image').css('width', '100px');
+                var imgElement = $('<img>').attr('src', image).attr('alt', 'Uploaded Image');
                 $('#preview-images-container').append(imgElement);
             });
         });
     });
-
-    // Image Preview:
-    document.addEventListener('DOMContentLoaded', function() {
-        const previewCheckbox = document.getElementById('previewimage');
-        const imagePreviewSection = document.getElementById('image-preview-section');
-    
-        previewCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                // Fetch and display the images
-                fetch('/query', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        files: [...document.getElementById('file').files].map(file => file.name)
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    imagePreviewSection.innerHTML = ''; // Clear previous images
-                    data.images.forEach(imageData => {
-                        const img = document.createElement('img');
-                        img.src = `data:image/png;base64,${imageData}`;
-                        img.style.width = '230px';
-                        imagePreviewSection.appendChild(img);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    imagePreviewSection.innerHTML = '<p style="color: red;">An error occurred while fetching images.</p>';
-                });
-            } else {
-                // Hide the images
-                imagePreviewSection.innerHTML = '';
-            }
-        });
-    });
-    
 
     // Minimize sidebar
     $('#minimize-sidebar').on('click', function() {
@@ -146,5 +113,4 @@ $(document).ready(function() {
             $(this).text('Minimize');
         }
     });
-
 });
