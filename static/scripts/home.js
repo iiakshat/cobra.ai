@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Establish socket connection
-    const socket = io.connect('http://127.0.0.1:8000');
+    const socket = io.connect('https://3.109.210.194:8000/');
 
     socket.on('connect', function() {
         socket.send('{{ name }} joined the chat');
