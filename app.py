@@ -63,7 +63,13 @@ def upload_files():
             return jsonify({'error': 'Both files and question are required.'}), 400
 
         nfiles = len(files)
+        
+        for files in os.listdir(app.config['UPLOAD_FOLDER']):
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], files))
+        
+        os.rmdir(app.config['UPLOAD_FOLDER'])
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
         for i, file in enumerate(files):
             fmt = file.filename.split('.')[-1]
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file.filename}")
@@ -82,11 +88,12 @@ def upload_files():
         vectors_ = vector_embedding(flask=True)
 
     file_cnt = 0
-    while not vectors_:
+    if not vectors_:
         socketio.emit('progress', {'message': "Waiting for files..."})
+    while not vectors_:
         time.sleep(0.5)
         file_cnt += 1
-        if file_cnt > 20:
+        if file_cnt == 20:
             return "Either None Or Too Many Files Have Been Uploaded."
 
     if fmt in ["mp3", "mp4", "wav"]:
@@ -105,4 +112,4 @@ def handle_message(message):
     send(message, broadcast=True)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', allow_unsafe_werkzeug=True, port=8000)
